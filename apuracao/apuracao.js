@@ -22,7 +22,7 @@ document.getElementById('back-btn-apuracao').addEventListener('click', () => {
 });
 
 function loadApuracao() {
-    const candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+    const candidates = dataBackup.getCandidates();
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
     loadCandidatesApuracao(candidates);

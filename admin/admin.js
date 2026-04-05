@@ -27,7 +27,7 @@ function checkAdminPassword() {
 }
 
 function loadAdminDashboard() {
-    const candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+    const candidates = dataBackup.getCandidates();
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const isPublic = localStorage.getItem('apuracao-public') === 'true';
 
@@ -115,7 +115,7 @@ function updatePublicStatus(isPublic) {
 }
 
 function exportData() {
-    const candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+    const candidates = dataBackup.getCandidates();
     const users = JSON.parse(localStorage.getItem('users')) || [];
     
     const data = {

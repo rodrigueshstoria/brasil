@@ -1,2 +1,2 @@
-// Load candidates from localStorage only
-let candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+// Load candidates from localStorage with backup system
+let candidates = dataBackup.checkDataIntegrity();
