@@ -1,3 +1,27 @@
+// Senhas válidas para acesso dos candidatos
+const validPasswords = [
+    'horizonte',
+    'velocity',
+    'misterio',
+    'notebook',
+    'fragment',
+    'solitude',
+    'universo',
+    'midnight',
+    'cascata',
+    'mountain',
+    'liberdade',
+    'fortress',
+    'aventura',
+    'emeralds',
+    'infinito',
+    'blueprint',
+    'relogios',
+    'pathway',
+    'oceanoaz',
+    'distance'
+];
+
 let currentQuestionIndex = 0;
 let userAnswers = [];
 
@@ -18,7 +42,7 @@ document.querySelectorAll('input[name="answer"]').forEach(radio => {
 
 function checkPassword() {
     const password = document.getElementById('password-input').value;
-    if (password === 'patrice') {
+    if (validPasswords.includes(password)) {
         document.getElementById('password-screen').classList.add('hidden');
         document.getElementById('start-screen').classList.remove('hidden');
     } else {
