@@ -89,6 +89,17 @@ function showResults() {
 }
 
 function restartQuiz() {
+    // Salvar respostas do usuário antes de reiniciar
+    if (userAnswers.length === questions.length) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        users.push({
+            id: Date.now(),
+            answers: userAnswers,
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
     currentQuestionIndex = 0;
     userAnswers = [];
     document.getElementById('result-screen').classList.add('hidden');

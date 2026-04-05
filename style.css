@@ -168,6 +168,25 @@ button:disabled {
     border-color: #009c3b;
 }
 
+#footer-links {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.75rem;
+    color: #999;
+    text-align: right;
+}
+
+#footer-links a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+#footer-links a:hover {
+    text-decoration: underline;
+}
+
 #ideology-profile {
     font-size: 18px;
     font-weight: bold;
