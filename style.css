@@ -219,6 +219,23 @@ button:disabled {
     transform: scale(1.05);
 }
 
+#quiz-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+#prev-btn {
+    background-color: #6c757d;
+}
+
+#prev-btn:hover:not(:disabled) {
+    background-color: #5a6268;
+    transform: scale(1.05);
+}
+
 #ideology-profile {
     font-size: 18px;
     font-weight: bold;

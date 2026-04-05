@@ -8,6 +8,7 @@ const COMPLETED_KEY = 'quiz_completed';
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
 document.getElementById('next-btn').addEventListener('click', nextQuestion);
+document.getElementById('prev-btn').addEventListener('click', previousQuestion);
 document.getElementById('restart-btn').addEventListener('click', restartQuiz);
 document.getElementById('save-progress-btn').addEventListener('click', saveProgress);
 
@@ -51,9 +52,26 @@ function showQuestion(index) {
         span.textContent = `${i + 1} - ${options[i]}`;
     });
 
+    // Limpar seleções anteriores
     document.querySelectorAll('input[name="answer"]').forEach(radio => radio.checked = false);
     document.querySelectorAll('.answer-option').forEach(label => label.classList.remove('selected'));
-    document.getElementById('next-btn').disabled = true;
+
+    // Carregar resposta anterior se existir
+    if (userAnswers[index] !== undefined) {
+        const previousAnswer = userAnswers[index];
+        const radioToCheck = document.querySelector(`input[name="answer"][value="${previousAnswer}"]`);
+        if (radioToCheck) {
+            radioToCheck.checked = true;
+            radioToCheck.parentElement.classList.add('selected');
+        }
+    }
+
+    // Controlar botões de navegação
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = !document.querySelector('input[name="answer"]:checked');
 
     // Mostrar botão salvar se não estiver completo
     const saveBtn = document.getElementById('save-progress-btn');
@@ -67,7 +85,15 @@ function showQuestion(index) {
 function nextQuestion() {
     const selectedAnswer = document.querySelector('input[name="answer"]:checked');
     if (selectedAnswer) {
-        userAnswers.push(parseInt(selectedAnswer.value));
+        const answerValue = parseInt(selectedAnswer.value);
+
+        // Se já existe uma resposta para esta pergunta, atualiza; senão, adiciona
+        if (userAnswers[currentQuestionIndex] !== undefined) {
+            userAnswers[currentQuestionIndex] = answerValue;
+        } else {
+            userAnswers.push(answerValue);
+        }
+
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             showQuestion(currentQuestionIndex);
@@ -115,6 +141,26 @@ function showResults() {
         div.innerHTML = `<span>${rank.name}</span><span>${rank.compatibility}%</span>`;
         rankingContainer.appendChild(div);
     });
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        // Salvar resposta atual antes de voltar (se existir)
+        const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+        if (selectedAnswer) {
+            const answerValue = parseInt(selectedAnswer.value);
+            if (userAnswers[currentQuestionIndex] !== undefined) {
+                userAnswers[currentQuestionIndex] = answerValue;
+            } else {
+                userAnswers.push(answerValue);
+            }
+        }
+
+        currentQuestionIndex--;
+        showQuestion(currentQuestionIndex);
+        // Salvar progresso automaticamente
+        saveProgress();
+    }
 }
 
 function saveProgress() {
