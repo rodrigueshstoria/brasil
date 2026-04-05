@@ -1,5 +1,5 @@
 // Senha de administrador (mude isso para uma senha forte!)
-const ADMIN_PASSWORD = 'admin123';
+const ADMIN_PASSWORD = 'Pinguelo1';
 
 // Event listeners
 document.getElementById('admin-login-btn').addEventListener('click', checkAdminPassword);
