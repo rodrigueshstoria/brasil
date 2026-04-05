@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Político - Brasil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="start-screen" class="screen">
+            <div id="election-icon">🗳️</div>
+            <h1>Eleição para o Congresso Brasileiro</h1>
+            <p>Responda algumas perguntas e descubra qual candidato está mais alinhado com seu posicionamento político.</p>
+            <button id="start-btn">Começar Teste</button>
+        </div>
+        <div id="quiz-screen" class="screen hidden">
+            <div id="progress">Pergunta <span id="current-question">1</span> de 15</div>
+            <div id="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+            <div id="question-container">
+                <p id="question-category"></p>
+                <h2 id="question-text"></h2>
+                <div id="answers">
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="1">
+                        <span>1 - Discordo totalmente</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="2">
+                        <span>2 - Discordo</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="3">
+                        <span>3 - Neutro</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="4">
+                        <span>4 - Concordo</span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="5">
+                        <span>5 - Concordo totalmente</span>
+                    </label>
+                </div>
+            </div>
+            <button id="next-btn" disabled>Próxima</button>
+        </div>
+        <div id="result-screen" class="screen hidden">
+            <h1>Seu Perfil Ideológico</h1>
+            <p id="ideology-profile"></p>
+            <h2>Compatibilidade com Candidatos</h2>
+            <div id="candidates-ranking"></div>
+            <button id="restart-btn">Refazer</button>
+        </div>
+    </div>
+    <script src="questions.js"></script>
+    <script src="candidates.js"></script>
+    <script src="ideology.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

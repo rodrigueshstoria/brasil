@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Candidato - Brasil</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="password-screen" class="screen">
+            <h1>Acesso ao Cadastro</h1>
+            <p>Digite a senha para cadastrar um congressista.</p>
+            <input type="password" id="password-input" placeholder="Senha">
+            <button id="password-btn">Entrar</button>
+            <button id="back-to-main">Voltar ao Quiz</button>
+        </div>
+        <div id="start-screen" class="screen hidden">
+            <div id="election-icon">🗳️</div>
+            <h1>Cadastro de Candidato</h1>
+            <p>Responda as perguntas para cadastrar seu perfil político.</p>
+            <button id="start-btn">Começar Cadastro</button>
+        </div>
+        <div id="quiz-screen" class="screen hidden">
+            <div id="progress">Pergunta <span id="current-question">1</span> de 15</div>
+            <div id="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+            <div id="question-container">
+                <p id="question-category"></p>
+                <h2 id="question-text"></h2>
+                <div id="answers">
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="1">
+                        <span>1 - </span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="2">
+                        <span>2 - </span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="3">
+                        <span>3 - </span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="4">
+                        <span>4 - </span>
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="5">
+                        <span>5 - </span>
+                    </label>
+                </div>
+            </div>
+            <button id="next-btn" disabled>Próxima</button>
+        </div>
+        <div id="save-screen" class="screen hidden">
+            <h1>Salvar Perfil</h1>
+            <p>Digite seu nome para salvar o perfil.</p>
+            <input type="text" id="candidate-name" placeholder="Nome do Candidato">
+            <button id="save-btn">Salvar</button>
+            <button id="back-btn">Voltar ao Início</button>
+        </div>
+    </div>
+    <script src="questions.js"></script>
+    <script src="candidate-setup.js"></script>
+</body>
+</html>
