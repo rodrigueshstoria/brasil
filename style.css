@@ -214,7 +214,20 @@ button:disabled {
     font-weight: bold;
 }
 
-#continue-btn:hover {
+#continue-candidate-btn {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: bold;
+}
+
+#continue-candidate-btn:hover {
     background-color: #138496;
     transform: scale(1.05);
 }
