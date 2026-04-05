@@ -41,11 +41,15 @@ async function loadAdminDashboard() {
         document.getElementById('make-public-checkbox').checked = isPublic;
         updatePublicStatus(isPublic);
 
-    // Carregar lista de candidatos
-    loadCandidatesList(candidates);
+        // Carregar lista de candidatos
+        loadCandidatesList(candidates);
 
-    // Carregar lista de usuários
-    loadUsersList(users);
+        // Carregar lista de usuários
+        loadUsersList(users);
+    } catch (e) {
+        console.error('Erro ao carregar dashboard:', e);
+        alert('❌ Erro ao carregar dados do admin. Verifique o console.');
+    }
 }
 
 function loadCandidatesList(candidates) {
