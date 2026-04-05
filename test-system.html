@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste do Sistema</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        .test { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .pass { background: #d4edda; border-color: #28a745; }
+        .fail { background: #f8d7da; border-color: #dc3545; }
+        .pending { background: #fff3cd; border-color: #ffc107; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste do Sistema Brasil Quiz</h1>
+    
+    <div class="test pending">
+        <h2>Teste 1: Verificar Token GitHub</h2>
+        <button onclick="testToken()">Testar</button>
+        <p id="token-result"></p>
+    </div>
+
+    <div class="test pending">
+        <h2>Teste 2: Salvar Candidato de Teste</h2>
+        <button onclick="testSaveCandidate()">Testar</button>
+        <p id="candidate-result"></p>
+    </div>
+
+    <div class="test pending">
+        <h2>Teste 3: Recuperar Candidatos do GitHub</h2>
+        <button onclick="testFetchCandidates()">Testar</button>
+        <p id="fetch-result"></p>
+    </div>
+
+    <div class="test pending">
+        <h2>Teste 4: Salvar Usuário de Teste</h2>
+        <button onclick="testSaveUser()">Testar</button>
+        <p id="user-result"></p>
+    </div>
+
+    <div class="test pending">
+        <h2>Teste 5: Verificar Admin Panel</h2>
+        <button onclick="testAdminPanel()">Testar</button>
+        <p id="admin-result"></p>
+    </div>
+
+    <div class="test pending">
+        <h2>Teste 6: Verificar Apuração</h2>
+        <button onclick="testApuracao()">Testar</button>
+        <p id="apuracao-result"></p>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="database.js"></script>
+    <script src="github-sync.js"></script>
+
+    <script>
+        const db = new DatabaseManager();
+        const githubSync = new GitHubSync();
+        
+        if (GITHUB_TOKEN && GITHUB_TOKEN !== 'SEU_TOKEN_AQUI') {
+            githubSync.setToken(GITHUB_TOKEN);
+            console.log('✅ GitHub sync ativado');
+        }
+
+        async function testToken() {
+            const result = document.getElementById('token-result');
+            try {
+                if (GITHUB_TOKEN === 'SEU_TOKEN_AQUI') {
+                    result.innerHTML = '❌ Token não configurado';
+                    result.parentElement.className = 'test fail';
+                } else {
+                    result.innerHTML = '✅ Token configurado: ' + GITHUB_TOKEN.substring(0, 10) + '...';
+                    result.parentElement.className = 'test pass';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        async function testSaveCandidate() {
+            const result = document.getElementById('candidate-result');
+            try {
+                await db.init();
+                const testCandidate = {
+                    name: 'Candidato Teste ' + new Date().getTime(),
+                    answers: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+                    password: 'senha123',
+                    savedAt: new Date().toISOString()
+                };
+
+                // Salvar no IndexedDB
+                await db.saveCandidates([testCandidate]);
+                
+                // Tentar sincronizar com GitHub
+                try {
+                    await githubSync.syncCandidates([testCandidate]);
+                    result.innerHTML = '✅ Candidato salvo em IndexedDB e GitHub: ' + testCandidate.name;
+                    result.parentElement.className = 'test pass';
+                } catch (e) {
+                    result.innerHTML = '⚠️ Candidato salvo em IndexedDB, mas GitHub falhou: ' + e.message;
+                    result.parentElement.className = 'test pending';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        async function testFetchCandidates() {
+            const result = document.getElementById('fetch-result');
+            try {
+                const data = await githubSync.pullLatestData();
+                if (data && data.candidates) {
+                    result.innerHTML = `✅ Recuperado do GitHub: ${data.candidates.length} candidato(s)`;
+                    if (data.candidates.length > 0) {
+                        result.innerHTML += '<br>Candidatos: ' + data.candidates.map(c => c.name).join(', ');
+                    }
+                    result.parentElement.className = 'test pass';
+                } else {
+                    result.innerHTML = '⚠️ Nenhum dado retornado do GitHub';
+                    result.parentElement.className = 'test pending';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        async function testSaveUser() {
+            const result = document.getElementById('user-result');
+            try {
+                await db.init();
+                const testUser = {
+                    timestamp: new Date().toISOString(),
+                    answers: [2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1],
+                    results: [
+                        { candidate: 'Teste 1', percentage: 85 },
+                        { candidate: 'Teste 2', percentage: 72 },
+                        { candidate: 'Teste 3', percentage: 65 }
+                    ]
+                };
+
+                await db.saveUsers([testUser]);
+                
+                try {
+                    await githubSync.syncUsers([testUser]);
+                    result.innerHTML = '✅ Usuário salvo em IndexedDB e GitHub';
+                    result.parentElement.className = 'test pass';
+                } catch (e) {
+                    result.innerHTML = '⚠️ Usuário salvo em IndexedDB, mas GitHub falhou: ' + e.message;
+                    result.parentElement.className = 'test pending';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        async function testAdminPanel() {
+            const result = document.getElementById('admin-result');
+            try {
+                // Verificar se admin.html/admin.js existe
+                const response = await fetch('admin/index.html');
+                if (response.ok) {
+                    result.innerHTML = '✅ Admin panel acessível em /admin/';
+                    result.parentElement.className = 'test pass';
+                } else {
+                    result.innerHTML = '❌ Admin panel não encontrado';
+                    result.parentElement.className = 'test fail';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro ao acessar admin: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        async function testApuracao() {
+            const result = document.getElementById('apuracao-result');
+            try {
+                const response = await fetch('apuracao.html');
+                if (response.ok) {
+                    result.innerHTML = '✅ Apuração acessível em /apuracao.html';
+                    result.parentElement.className = 'test pass';
+                } else {
+                    result.innerHTML = '❌ Apuração não encontrada';
+                    result.parentElement.className = 'test fail';
+                }
+            } catch (e) {
+                result.innerHTML = '❌ Erro ao acessar apuração: ' + e.message;
+                result.parentElement.className = 'test fail';
+            }
+        }
+
+        // Executar todos os testes ao carregar
+        window.addEventListener('load', () => {
+            console.log('Iniciando testes...');
+            testToken();
+        });
+    </script>
+</body>
+</html>
