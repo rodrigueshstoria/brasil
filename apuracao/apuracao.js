@@ -1,11 +1,11 @@
 // Verificar se apuração está pública
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const isPublic = localStorage.getItem('apuracao-public') === 'true';
     
     if (isPublic) {
         document.getElementById('closed-screen').classList.add('hidden');
         document.getElementById('apuracao-screen').classList.remove('hidden');
-        loadApuracao();
+        await loadApuracao();
     } else {
         document.getElementById('closed-screen').classList.remove('hidden');
         document.getElementById('apuracao-screen').classList.add('hidden');
@@ -21,13 +21,18 @@ document.getElementById('back-btn-apuracao').addEventListener('click', () => {
     window.location.href = '../index.html';
 });
 
-function loadApuracao() {
-    const candidates = dataBackup.getCandidates();
-    const users = JSON.parse(localStorage.getItem('users')) || [];
+async function loadApuracao() {
+    try {
+        await db.init();
+        const candidates = await db.getCandidates();
+        const users = await db.getUsers();
 
-    loadCandidatesApuracao(candidates);
-    loadUsersApuracao(users);
-    updateLastUpdate();
+        loadCandidatesApuracao(candidates);
+        loadUsersApuracao(users);
+        updateLastUpdate();
+    } catch (e) {
+        console.error('Erro ao carregar apuração:', e);
+    }
 }
 
 function loadCandidatesApuracao(candidates) {

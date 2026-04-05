@@ -26,18 +26,20 @@ function checkAdminPassword() {
     }
 }
 
-function loadAdminDashboard() {
-    const candidates = dataBackup.getCandidates();
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const isPublic = localStorage.getItem('apuracao-public') === 'true';
+async function loadAdminDashboard() {
+    try {
+        await db.init();
+        const candidates = await db.getCandidates();
+        const users = await db.getUsers();
+        const isPublic = localStorage.getItem('apuracao-public') === 'true';
 
-    // Atualizar estatísticas
-    document.getElementById('candidates-count').textContent = candidates.length;
-    document.getElementById('users-count').textContent = users.length;
+        // Atualizar estatísticas
+        document.getElementById('candidates-count').textContent = candidates.length;
+        document.getElementById('users-count').textContent = users.length;
 
-    // Atualizar checkbox de público
-    document.getElementById('make-public-checkbox').checked = isPublic;
-    updatePublicStatus(isPublic);
+        // Atualizar checkbox de público
+        document.getElementById('make-public-checkbox').checked = isPublic;
+        updatePublicStatus(isPublic);
 
     // Carregar lista de candidatos
     loadCandidatesList(candidates);
@@ -115,39 +117,49 @@ function updatePublicStatus(isPublic) {
 }
 
 function exportData() {
-    const candidates = dataBackup.getCandidates();
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    
-    const data = {
-        exportDate: new Date().toLocaleString('pt-BR'),
-        candidates,
-        users,
-        summary: {
-            totalCandidates: candidates.length,
-            totalUsers: users.length
+    (async () => {
+        try {
+            const candidates = await db.getCandidates();
+            const users = await db.getUsers();
+            
+            const data = {
+                exportDate: new Date().toLocaleString('pt-BR'),
+                candidates,
+                users,
+                summary: {
+                    totalCandidates: candidates.length,
+                    totalUsers: users.length
+                }
+            };
+
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `apuracao_${new Date().getTime()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ Dados exportados com sucesso! (JSON)\n\nPara salvar os dados no repositório, compartilhe este arquivo com o desenvolvedor ou faça upload no GitHub.');
+        } catch (e) {
+            alert('❌ Erro ao exportar dados');
         }
-    };
-
-    const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `apuracao_${new Date().getTime()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    alert('Dados exportados com sucesso!');
+    })();
 }
 
 function clearAllData() {
     if (confirm('⚠️ ATENÇÃO! Isso vai deletar TODOS os dados (candidatos e participantes). Tem certeza?')) {
         if (confirm('Tem certeza mesmo? Esta ação NÃO pode ser desfeita!')) {
-            localStorage.removeItem('candidates');
-            localStorage.removeItem('users');
-            localStorage.removeItem('apuracao-public');
-            alert('Todos os dados foram deletados!');
-            loadAdminDashboard();
+            (async () => {
+                try {
+                    await db.clearAll();
+                    alert('✅ Todos os dados foram deletados!');
+                    loadAdminDashboard();
+                } catch (e) {
+                    alert('❌ Erro ao deletar dados');
+                }
+            })();
         }
     }
 }

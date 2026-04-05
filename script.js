@@ -222,17 +222,26 @@ function loadProgress() {
 function restartQuiz() {
     // Salvar respostas do usuário antes de reiniciar
     if (userAnswers.length === questions.length) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        users.push({
-            id: Date.now(),
-            answers: userAnswers,
-            timestamp: new Date().toISOString()
-        });
-        localStorage.setItem('users', JSON.stringify(users));
+        saveUserResponse();
     }
 
     currentQuestionIndex = 0;
     userAnswers = [];
     document.getElementById('result-screen').classList.add('hidden');
     document.getElementById('start-screen').classList.remove('hidden');
+}
+
+async function saveUserResponse() {
+    try {
+        const users = await db.getUsers();
+        users.push({
+            id: Date.now(),
+            answers: userAnswers,
+            timestamp: new Date().toISOString()
+        });
+        await db.saveUsers(users);
+        console.log('✅ Resposta do usuário salva');
+    } catch (e) {
+        console.error('❌ Erro ao salvar resposta do usuário:', e);
+    }
 }

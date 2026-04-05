@@ -143,22 +143,29 @@ function showSaveScreen() {
     document.getElementById('save-screen').classList.remove('hidden');
 }
 
-function saveCandidate() {
+async function saveCandidate() {
     const name = document.getElementById('candidate-name').value.trim();
     if (name && userAnswers.length === questions.length) {
-        const candidates = dataBackup.getCandidates();
-        candidates.push({ name, answers: userAnswers });
-        
-        if (dataBackup.saveCandidates(candidates)) {
-            alert('✅ Candidato salvo com sucesso!\n\nÚltimo salvamento: ' + dataBackup.getLastSaveTime());
+        try {
+            await db.init();
+            const candidates = await db.getCandidates();
+            candidates.push({ 
+                name, 
+                answers: userAnswers,
+                savedAt: new Date().toISOString()
+            });
+            
+            await db.saveCandidates(candidates);
+            alert('✅ Candidato salvo com sucesso!\n\nValor salvo em: ' + new Date().toLocaleString('pt-BR'));
             
             // Limpar progresso após salvar com sucesso
             localStorage.removeItem(CANDIDATE_PROGRESS_KEY);
             localStorage.removeItem(CANDIDATE_COMPLETED_KEY);
 
             location.reload();
-        } else {
-            alert('❌ Erro ao salvar candidato. Verifique o armazenamento do navegador.');
+        } catch (e) {
+            alert('❌ Erro ao salvar candidato.');
+            console.error(e);
         }
     } else {
         alert('Por favor, insira um nome válido.');
