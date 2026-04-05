@@ -156,7 +156,14 @@ async function saveCandidate() {
             });
             
             await db.saveCandidates(candidates);
-            alert('✅ Candidato salvo com sucesso!\n\nValor salvo em: ' + new Date().toLocaleString('pt-BR'));
+            
+            // Sincronizar automaticamente com GitHub
+            const synced = await githubSync.syncCandidates(candidates);
+            if (synced) {
+                alert('✅ Candidato salvo e sincronizado com sucesso!\n\nOutros usuários verão seus dados automaticamente.');
+            } else {
+                alert('✅ Candidato salvo localmente!\n\n(A sincronização com GitHub requer token configurado)');
+            }
             
             // Limpar progresso após salvar com sucesso
             localStorage.removeItem(CANDIDATE_PROGRESS_KEY);

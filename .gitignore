@@ -1,0 +1,11 @@
+# Segurança - Não versionem arquivos com tokens
+config.js
+
+# Node modules (se usar npm)
+node_modules/
+
+# Arquivos do sistema
+.DS_Store
+.env
+.env.local
+*.log

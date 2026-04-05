@@ -107,13 +107,31 @@ function nextQuestion() {
     }
 }
 
-function showResults() {
+async function showResults() {
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
 
+    // Sincronizar dados do GitHub antes de mostrar resultados
+    const latestData = await githubSync.pullLatestData();
+    if (latestData && latestData.candidates.length > 0) {
+        candidates = latestData.candidates;
+        await db.saveCandidates(candidates);
+        console.log(`✅ Atualizados ${candidates.length} candidatos do GitHub`);
+    }
+
+    // Se ainda não há candidatos
     if (candidates.length === 0) {
         document.getElementById('ideology-profile').textContent = generateIdeologyProfile(userAnswers);
-        document.getElementById('candidates-ranking').innerHTML = '<p>Nenhum candidato cadastrado ainda. Acesse /congresso para cadastrar.</p>';
+        document.getElementById('candidates-ranking').innerHTML = '<p>Nenhum candidato cadastrado ainda. Aguarde... a página se atualizará automaticamente quando houver candidatos.</p>';
+        
+        // Tentar novamente a cada 5 segundos
+        const retryInterval = setInterval(async () => {
+            const newData = await githubSync.pullLatestData();
+            if (newData && newData.candidates.length > 0) {
+                clearInterval(retryInterval);
+                showResults(); // Resetar e mostrar novamente
+            }
+        }, 5000);
         return;
     }
 
@@ -141,6 +159,9 @@ function showResults() {
         div.innerHTML = `<span>${rank.name}</span><span>${rank.compatibility}%</span>`;
         rankingContainer.appendChild(div);
     });
+
+    // Auto-sincronizar respostas do usuário
+    await syncUserResponseAuto();
 }
 
 function previousQuestion() {
@@ -243,5 +264,17 @@ async function saveUserResponse() {
         console.log('✅ Resposta do usuário salva');
     } catch (e) {
         console.error('❌ Erro ao salvar resposta do usuário:', e);
+    }
+}
+
+async function syncUserResponseAuto() {
+    try {
+        const users = await db.getUsers();
+        const synced = await githubSync.syncUsers(users);
+        if (synced) {
+            console.log('✅ Respostas sincronizadas automaticamente no GitHub');
+        }
+    } catch (e) {
+        console.error('❌ Erro ao sincronizar respostas automaticamente:', e);
     }
 }
