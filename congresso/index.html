@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Candidato - Brasil</title>
-    <link rel="stylesheet" href="../style.css?v=3">
+    <link rel="stylesheet" href="../style.css?v=4">
 </head>
 <body>
     <div id="app">
         <div id="password-screen" class="screen">
             <h1>Acesso ao Cadastro</h1>
-            <p>Digite a senha para cadastrar um congressista.</p>
+            <p id="candidate-description"><strong>Instruções para Candidatos</strong><br><br>Este quiz tem como objetivo identificar o alinhamento político entre os participantes do jogo, permitindo que outros jogadores encontrem candidatos com posições semelhantes às suas.<br><br><strong>Como responder:</strong><br>• Responda às 15 afirmações do quiz<br>• Utilize a escala de 1 a 5:<br>&nbsp;&nbsp;&nbsp;&nbsp;1 = Discordo totalmente<br>&nbsp;&nbsp;&nbsp;&nbsp;5 = Concordo totalmente<br>• Responda de acordo com suas posições reais no jogo<br>• Ao final, informe seu nome para registrar seu perfil<br><br>Suas respostas serão utilizadas como base de comparação. Quando outros jogadores realizarem o quiz, o sistema calculará a similaridade entre as respostas e indicará quais candidatos estão mais alinhados com cada participante.</p>
+            <p style="font-weight: bold; margin-top: 20px;">Digite a senha para continuar:</p>
             <input type="password" id="password-input" placeholder="Senha">
             <button id="password-btn">Entrar</button>
             <button id="back-to-main">Voltar ao Quiz</button>
@@ -62,7 +63,7 @@
             <button id="back-btn">Voltar ao Início</button>
         </div>
     </div>
-    <script src="../questions.js?v=3"></script>
-    <script src="candidate-setup.js?v=3"></script>
+    <script src="../questions.js?v=4"></script>
+    <script src="candidate-setup.js?v=4"></script>
 </body>
 </html>
