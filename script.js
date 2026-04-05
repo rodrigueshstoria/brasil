@@ -15,6 +15,13 @@ document.getElementById('save-progress-btn').addEventListener('click', saveProgr
 // Carregar progresso automaticamente ao iniciar
 document.addEventListener('DOMContentLoaded', loadProgress);
 
+// Garantir que a resposta seja salva antes de fechar janela
+window.addEventListener('beforeunload', async (e) => {
+    if (quizCompleted && userAnswers.length === questions.length) {
+        await saveUserResponse();
+    }
+});
+
 document.querySelectorAll('input[name="answer"]').forEach(radio => {
     radio.addEventListener('change', () => {
         document.getElementById('next-btn').disabled = false;
@@ -110,6 +117,9 @@ function nextQuestion() {
 async function showResults() {
     document.getElementById('quiz-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
+
+    // Salvar resposta do usuário antes de exibir resultados
+    await saveUserResponse();
 
     // Sincronizar dados do GitHub antes de mostrar resultados
     const latestData = await githubSync.pullLatestData();
