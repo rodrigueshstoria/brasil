@@ -121,27 +121,19 @@ async function showResults() {
     // Salvar resposta do usuário antes de exibir resultados
     await saveUserResponse();
 
-    // Sincronizar dados do GitHub antes de mostrar resultados
-    const latestData = await githubSync.pullLatestData();
-    if (latestData && latestData.candidates.length > 0) {
-        candidates = latestData.candidates;
-        await db.saveCandidates(candidates);
-        console.log(`✅ Atualizados ${candidates.length} candidatos do GitHub`);
+    // Carregar candidatos do Firebase se disponível
+    if (typeof firebaseManager !== 'undefined' && firebaseManager.enabled) {
+        const firebaseCandidates = await firebaseManager.getCandidates();
+        if (firebaseCandidates.length > 0) {
+            candidates = firebaseCandidates;
+            await db.saveCandidates(candidates);
+            console.log(`✅ Atualizados ${candidates.length} candidatos do Firebase`);
+        }
     }
 
-    // Se ainda não há candidatos
     if (candidates.length === 0) {
         document.getElementById('ideology-profile').textContent = generateIdeologyProfile(userAnswers);
-        document.getElementById('candidates-ranking').innerHTML = '<p>Nenhum candidato cadastrado ainda. Aguarde... a página se atualizará automaticamente quando houver candidatos.</p>';
-        
-        // Tentar novamente a cada 5 segundos
-        const retryInterval = setInterval(async () => {
-            const newData = await githubSync.pullLatestData();
-            if (newData && newData.candidates.length > 0) {
-                clearInterval(retryInterval);
-                showResults(); // Resetar e mostrar novamente
-            }
-        }, 5000);
+        document.getElementById('candidates-ranking').innerHTML = '<p>Nenhum candidato cadastrado ainda. Aguarde... o sistema usará Firebase quando houver dados.</p>';
         return;
     }
 
@@ -170,8 +162,6 @@ async function showResults() {
         rankingContainer.appendChild(div);
     });
 
-    // Auto-sincronizar respostas do usuário
-    await syncUserResponseAuto();
 }
 
 function previousQuestion() {
@@ -264,27 +254,22 @@ function restartQuiz() {
 
 async function saveUserResponse() {
     try {
-        const users = await db.getUsers();
-        users.push({
+        const userEntry = {
             id: Date.now(),
             answers: userAnswers,
             timestamp: new Date().toISOString()
-        });
+        };
+
+        const users = await db.getUsers();
+        users.push(userEntry);
         await db.saveUsers(users);
-        console.log('✅ Resposta do usuário salva');
+        console.log('✅ Resposta do usuário salva no IndexedDB');
+
+        if (typeof firebaseManager !== 'undefined' && firebaseManager.enabled) {
+            await firebaseManager.saveUserResponse(userEntry);
+        }
     } catch (e) {
         console.error('❌ Erro ao salvar resposta do usuário:', e);
     }
 }
 
-async function syncUserResponseAuto() {
-    try {
-        const users = await db.getUsers();
-        const synced = await githubSync.syncUsers(users);
-        if (synced) {
-            console.log('✅ Respostas sincronizadas automaticamente no GitHub');
-        }
-    } catch (e) {
-        console.error('❌ Erro ao sincronizar respostas automaticamente:', e);
-    }
-}

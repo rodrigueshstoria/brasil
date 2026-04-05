@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Quiz Político Brasil</title>
+    <link rel="stylesheet" href="../style.css?v=5">
+    <link rel="stylesheet" href="admin.css?v=1">
+    <script src="../database.js?v=1"></script>
+    <script src="../data-backup.js?v=1"></script>
+    <script src="../github-sync.js?v=1"></script>
+    <script src="../config.js?v=1"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Tela de Login -->
+        <div id="login-screen" class="screen">
+            <div id="election-icon">🔐</div>
+            <h1>Painel Administrativo</h1>
+            <p>Digite a senha de administrador para acessar.</p>
+            <input type="password" id="admin-password" placeholder="Senha de administrador">
+            <button id="admin-login-btn">Entrar</button>
+            <button id="back-to-main">Voltar ao Quiz</button>
+        </div>
+
+        <!-- Tela Principal do Admin -->
+        <div id="admin-screen" class="screen hidden">
+            <h1>Painel Administrativo</h1>
+            
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h2>📊 Estatísticas</h2>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <span class="stat-label">Candidatos Cadastrados</span>
+                            <span class="stat-number" id="candidates-count">0</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Participantes</span>
+                            <span class="stat-number" id="users-count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2>🗳️ Candidatos</h2>
+                    <div id="candidates-list" class="data-list">
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2>👥 Participantes</h2>
+                    <div id="users-list" class="data-list">
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="admin-section">
+                    <h2>⚙️ Opções</h2>
+                    <div class="admin-options">
+                        <label>
+                            <input type="checkbox" id="make-public-checkbox">
+                            Liberar página de apuração para o público
+                        </label>
+                        <p id="public-status" class="status-text">Status: Privado</p>
+                        <button id="export-btn" class="secondary-btn">📥 Exportar Dados (JSON)</button>
+                        <button id="clear-data-btn" class="danger-btn">🗑️ Limpar Todos os Dados</button>
+                        <button id="logout-btn" class="secondary-btn">Sair</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js?v=1"></script>
+</body>
+</html>

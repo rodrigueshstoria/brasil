@@ -1,21 +1,27 @@
 # brasil
 Eleição do Brasil
 
-## Configuração do GitHub Token
+Este repositório agora está configurado para funcionar com Firebase Firestore. Você pode copiar os arquivos para o repositório `rodrigueshstoria` e testar lá.
 
-Para que a sincronização funcione no GitHub Pages, é necessário que o arquivo `config.js` exista no repositório e contenha seu token GitHub válido.
+## Configuração do Firebase
+
+Para usar o app, crie um aplicativo web no Firebase e preencha `FIREBASE_CONFIG` em `config.js` com as credenciais do seu projeto.
 
 O arquivo deve ter este formato:
 
 ```javascript
-const GITHUB_TOKEN = 'SEU_TOKEN_AQUI';
-
-if (typeof githubSync !== 'undefined' && GITHUB_TOKEN && GITHUB_TOKEN !== 'SEU_TOKEN_AQUI') {
-    githubSync.setToken(GITHUB_TOKEN);
-    console.log('✅ GitHub sync ativado');
-}
+const FIREBASE_CONFIG = {
+    apiKey: 'SEU_API_KEY_AQUI',
+    authDomain: 'SEU_PROJECT_ID.firebaseapp.com',
+    projectId: 'SEU_PROJECT_ID',
+    storageBucket: 'SEU_PROJECT_ID.appspot.com',
+    messagingSenderId: 'SEU_MESSAGING_SENDER_ID',
+    appId: 'SEU_APP_ID',
+    measurementId: 'SEU_MEASUREMENT_ID'
+};
 ```
 
 ### Importante
-- Se você não quiser expor o token publicamente, não coloque o `config.js` no repositório.
-- Mas usando apenas o GitHub Pages sem servidor, o token precisa estar disponível no código para que a sincronização funcione.
+- Não faça commit de `config.js` com credenciais reais.
+- Verifique as regras do Firestore para permitir gravação/leitura enquanto estiver testando.
+- O app salva respostas de usuários e candidatos no Firestore quando o Firebase estiver configurado.

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuração - Quiz Político Brasil</title>
+    <link rel="stylesheet" href="../style.css?v=5">
+    <link rel="stylesheet" href="apuracao.css?v=1">
+    <script src="../database.js?v=1"></script>
+    <script src="../data-backup.js?v=1"></script>
+    <script src="../github-sync.js?v=1"></script>
+    <script src="../config.js?v=1"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Mensagem de apuração fechada -->
+        <div id="closed-screen" class="screen">
+            <div id="election-icon">🔒</div>
+            <h1>Apuração Fechada</h1>
+            <p>A apuração ainda não foi aberta para visualização pública.</p>
+            <button id="back-btn">Voltar ao Quiz</button>
+        </div>
+
+        <!-- Tela de apuração aberta -->
+        <div id="apuracao-screen" class="screen hidden">
+            <h1>📊 Apuração - Resultados do Quiz Político</h1>
+            
+            <div class="apuracao-container">
+                <div class="apuracao-section">
+                    <h2>Candidatos Cadastrados</h2>
+                    <div id="candidates-apuracao" class="data-list">
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="apuracao-section">
+                    <h2>Participantes</h2>
+                    <div id="users-apuracao" class="data-list">
+                        <p>Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="apuracao-info">
+                    <p>⏱️ Última atualização: <span id="last-update">--:--</span></p>
+                </div>
+            </div>
+
+            <button id="back-btn-apuracao" class="secondary-btn">Voltar ao Quiz</button>
+        </div>
+    </div>
+
+    <script src="apuracao.js?v=1"></script>
+</body>
+</html>
