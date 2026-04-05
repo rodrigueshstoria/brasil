@@ -29,6 +29,12 @@ function checkAdminPassword() {
 async function loadAdminDashboard() {
     try {
         await db.init();
+        const latestData = await githubSync.pullLatestData();
+        if (latestData) {
+            await db.saveCandidates(latestData.candidates || []);
+            await db.saveUsers(latestData.users || []);
+        }
+
         const candidates = await db.getCandidates();
         const users = await db.getUsers();
         const isPublic = localStorage.getItem('apuracao-public') === 'true';
